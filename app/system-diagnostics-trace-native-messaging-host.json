@@ -3,5 +3,5 @@
   "description": "Native messaging host for the system-diagnostics-trace browser extension.",
   "path": "C:\\Users\\bkey1\\AppData\\Local\\Programs\\system-diagnostics-trace-browser-extension\\system-diagnostics-trace-native-messaging-host.exe",
   "type": "stdio",
-  "allowed_origins": ["chrome-extension://cmdpllcfnjdfakjlobjdmlcamjobnhbf/"]
+  "allowed_origins": ["chrome-extension://gigdeohcjhmkmfnpfefcjfmajlinajcb/"]
 }
