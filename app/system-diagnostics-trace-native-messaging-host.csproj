@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup Label="ConfigurationAndPlatform">
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU</Platforms> 
+    <ProjectName>$(MSBuildProjectName)</ProjectName>
+    <RootNamespace>system-diagnostics-trace-native-messaging-host</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Common.props))" />
+  <PropertyGroup Label="Globals">
+    <OutputType>WinExe</OutputType>
+  </PropertyGroup>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Sign.targets))" />
+</Project>

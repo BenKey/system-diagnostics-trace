@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?> <!-- -*- coding: utf-8-with-signature -*- -->
+<Project
+  ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="CommonProperties">
+    <TopLevelDir>$(MSBuildThisFileDirectory)</TopLevelDir>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <BaseOutputPath>$(TopLevelDir)bin\$(ProjectName)\</BaseOutputPath>
+    <DebugType>pdbonly</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <NoLogo>true</NoLogo>
+    <Nullable>enable</Nullable>
+    <RuntimeIdentifier Condition="'$(Platform)'=='Win32'">win-x86</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(Platform)'=='x64'">win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(Platform)'=='x86'">win-x86</RuntimeIdentifier>
+    <SelfContained>false</SelfContained>
+    <TargetFrameworks>net6.0-windows</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <PropertyGroup Label="ApplicationSettings">
+    <ApplicationDefaultFont>Segoe UI, 11pt, style=bold</ApplicationDefaultFont>
+    <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
+    <ApplicationUseCompatibleTextRendering>false</ApplicationUseCompatibleTextRendering>
+    <ApplicationVisualStyles>true</ApplicationVisualStyles>
+  </PropertyGroup>
+  <PropertyGroup Label="PackageAttributes">
+    <Authors>Ben Key</Authors>
+    <Company>Ben Key</Company>
+    <Copyright>© Ben Key, 2023</Copyright>
+    <ApplicationVersion>2023.2308.2.0</ApplicationVersion>
+    <LinkVersion>2023.2308</LinkVersion>
+    <PackageVersion>2023.2308.2.0</PackageVersion>
+    <Version>2023.2308.2.0</Version>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Label="CodeSigning">
+    <CertificateThumbprint>$(SnKOpen_CertificateThumbprint)</CertificateThumbprint>
+    <CertificateThumbprint Condition="'$(CertificateThumbprint)'==''">1313366e27286687dfe7ff38278220778bb067e2</CertificateThumbprint>
+    <SignToolTimestampServer>http://timestamp.comodoca.com/authenticode</SignToolTimestampServer>
+    <SignToolTimestampServers>http://timestamp.comodoca.com/authenticode;http://timestamp.verisign.com/scripts/timstamp.dll;http://timestamp.globalsign.com/scripts/timstamp.dll;http://timestamp.comodoca.com/authenticode;http://www.startssl.com/timestamp</SignToolTimestampServers>
+  </PropertyGroup>
+</Project>

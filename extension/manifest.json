@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "system-diagnostics-trace",
+  "version": "1.0",
+  "description": "A browser extension that makes it possible to use System.Diagnostics.Trace.WriteLine from a browser extension or a website.",
+  "icons": {
+    "16": "icons/system-diagnostics-trace-16.png",
+    "32": "icons/system-diagnostics-trace-32.png",
+    "48": "icons/system-diagnostics-trace-48.png",
+    "128": "icons/system-diagnostics-trace-128.png",
+    "256": "icons/system-diagnostics-trace-256.png"
+  },
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "permissions": [ "nativeMessaging" ],
+  "externally_connectable": {
+    "ids": ["*"],
+    "matches": [
+      "https://sullivanandkey.com/"
+    ],
+    "accepts_tls_channel_id": false
+  }
+}

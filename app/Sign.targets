@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="Sign" AfterTargets="CopyFilesToOutputDirectory">
+    <ItemGroup>
+      <DllToSign Include="$(OutputPath)$(TargetName).dll" />
+      <ExeToSign Include="$(OutputPath)$(TargetName).exe" />
+    </ItemGroup>
+    <Message Condition="Exists('@(DllToSign)')" Importance="high" Text="Signing '@(DllToSign)'." />
+    <SignFile Condition="Exists('@(DllToSign)')" CertificateThumbprint="$(CertificateThumbprint)" SigningTarget="@(DllToSign)" TargetFrameworkVersion="v4.5" TimestampUrl="$(SignToolTimestampServer)" />
+    <Message Condition="Exists('@(ExeToSign)')" Importance="high" Text="Signing '@(ExeToSign)'." />
+    <SignFile Condition="Exists('@(ExeToSign)')" CertificateThumbprint="$(CertificateThumbprint)" SigningTarget="@(ExeToSign)" TargetFrameworkVersion="v4.5" TimestampUrl="$(SignToolTimestampServer)" />
+  </Target>
+</Project>
