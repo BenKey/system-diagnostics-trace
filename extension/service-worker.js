@@ -32,10 +32,10 @@ function NativePortOnMessageListener(message) {
   if (IsInvalid(message)) {
     return false;
   }
-  if (!('status' in message)) {
+  if (!('Status' in message)) {
     return false;
   }
-  console.log(`Received from Native Host: ${message.status}.`);
+  console.log(`Received from Native Host: ${message.Status}.`);
 }
 
 function NativePortOnDisconnectListener() {
@@ -47,7 +47,7 @@ function RuntimeOnMessageExternalListener(message, sender, sendResponse) {
     return false;
   }
   nativePort.postMessage(message);
-  sendResponse({status: "Message posted to native host."});
+  sendResponse({Status: "Message posted to native host."});
 }
 
 function PortOnMessageListener(message) {

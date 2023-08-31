@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -27,11 +28,11 @@ public enum LogLevel
     logVerbose
 }
 
-public sealed class StringToLoglevelConverter: JsonConverter<LogLevel>
+public sealed class StringToLogLevelConverter: JsonConverter<LogLevel>
 {
     public override LogLevel Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (Enum.TryParse<LogLevel>(reader.GetString(), out LogLevel value))
+        if (Enum.TryParse(reader.GetString(), out LogLevel value))
         {
             return value;
         }
@@ -50,7 +51,7 @@ public sealed class SystemDiagnosticsTraceMessage
     public string? Message { get; set; }
     public string? Source { get; set; }
     public string? Context { get; set; }
-    [JsonConverter(typeof(StringToLoglevelConverter))]
+    [JsonConverter(typeof(StringToLogLevelConverter))]
     public LogLevel? Level { get; set; }
 }
 
@@ -61,11 +62,9 @@ public class SystemDiagnosticsTraceStatus
 
 public class SystemDiagnosticsTraceNativeMessagingHost
 {
-    private const string className = "SystemDiagnosticsTraceNativeMessagingHost";
-    private const int exit_failure = 1;
     private const int exit_success = 0;
-    private static Stream stdin = Console.OpenStandardInput();
-    private static Stream stdout = Console.OpenStandardOutput();
+    private static readonly Stream stdin = Console.OpenStandardInput();
+    private static readonly Stream stdout = Console.OpenStandardOutput();
 
     public static int Main(string[] args)
     {
@@ -107,7 +106,8 @@ public class SystemDiagnosticsTraceNativeMessagingHost
         }
         catch (Exception ex)
         {
-            Trace.Write($"JsonSerializer.Deserialize failed with error '{ex.Message}'.");
+            Trace.WriteLine($"JsonSerializer.Deserialize failed with error '{ex.Message}'.");
+            Trace.WriteLine(GetString(messageBuffer));
         }
         return message;
     }
@@ -147,10 +147,12 @@ public class SystemDiagnosticsTraceNativeMessagingHost
 
     private static void Write(string statusMessage)
     {
-        SystemDiagnosticsTraceStatus statusObject = new();
-        statusObject.Status = statusMessage;
+        SystemDiagnosticsTraceStatus statusObject = new()
+        {
+            Status = statusMessage
+        };
         string statusJSON = JsonSerializer.Serialize(statusObject);
-        var bytes = System.Text.Encoding.UTF8.GetBytes(statusJSON);
+        var bytes = Encoding.UTF8.GetBytes(statusJSON);
         stdout.WriteByte((byte)((bytes.Length >> 0) & 0xFF));
         stdout.WriteByte((byte)((bytes.Length >> 8) & 0xFF));
         stdout.WriteByte((byte)((bytes.Length >> 16) & 0xFF));
@@ -159,9 +161,9 @@ public class SystemDiagnosticsTraceNativeMessagingHost
         stdout.Flush();
     }
 
-    private static string GetString(char[] arr) 
+    private static string GetString(byte[] arr)
     {
-        return string.Concat(arr);
+        return Encoding.UTF8.GetString(arr, 0, arr.Length);
     }
 
     private static bool ShouldProcessMessage(SystemDiagnosticsTraceMessage message)
