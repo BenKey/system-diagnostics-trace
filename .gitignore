@@ -1,0 +1,4 @@
+app/.sarif/
+app/.vs/
+app/bin/
+app/obj/
