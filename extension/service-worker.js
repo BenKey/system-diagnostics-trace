@@ -14,10 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
-On startup, connect to the "benilda.key.system.diagnostics.trace.native.messaging.host" app.
-*/
-
+/* First connect to the "benilda.key.system.diagnostics.trace.native.messaging.host" app. */
 const nativePort = chrome.runtime.connectNative("benilda.key.system.diagnostics.trace.native.messaging.host");
 
 function IsInvalid(variable) {
@@ -35,19 +32,29 @@ function NativePortOnMessageListener(message) {
   if (!('Status' in message)) {
     return false;
   }
-  console.log(`Received from Native Host: ${message.Status}.`);
+  console.log(`Received from Native Messaging Host: ${message.Status}.`);
 }
 
 function NativePortOnDisconnectListener() {
-  console.log(`Native Host disconnected.`);
+  console.log(`Native Messaging Host disconnected.`);
+  nativePort = null;
 }
 
 function RuntimeOnMessageExternalListener(message, sender, sendResponse) {
+  const failedResponse = {
+    Success: false,
+    Status: 'Could not post message to Native Messaging Host.'
+  };
+  const succeededResponse = {
+    Success: true,
+    Status: 'Message posted to Native Messaging Host.'
+  };
   if (IsInvalid(nativePort)) {
+    sendResponse(failedResponse);
     return false;
   }
   nativePort.postMessage(message);
-  sendResponse({Status: "Message posted to native host."});
+  sendResponse(succeededResponse);
 }
 
 function PortOnMessageListener(message) {
@@ -61,16 +68,19 @@ function RuntimeOnConnectExternalListener(port) {
   port.onMessage.addListener(PortOnMessageListener);
 }
 
+chrome.runtime.onMessageExternal.addListener(RuntimeOnMessageExternalListener);
+chrome.runtime.onConnectExternal.addListener(RuntimeOnConnectExternalListener);
+
 if (IsValid(nativePort)) {
   console.log('Successfully connected to the benilda.key.system.diagnostics.trace.native.messaging.host.')
   nativePort.onMessage.addListener(NativePortOnMessageListener);
   nativePort.onDisconnect.addListener(NativePortOnDisconnectListener);
-  const hello_trace_message = {
+  const traceMessage = {
     Command: "trace",
     Message: "Hello world! It is truly a wonderful day to be alive!",
     Source: "system-diagnostics-trace",
     Context: "service-worker",
     Level: "2"
   };
-  nativePort.postMessage(hello_trace_message);
+  nativePort.postMessage(traceMessage);
 }

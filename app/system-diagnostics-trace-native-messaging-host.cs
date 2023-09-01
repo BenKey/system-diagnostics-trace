@@ -45,7 +45,7 @@ public sealed class StringToLogLevelConverter: JsonConverter<LogLevel>
     }
 }
 
-public sealed class SystemDiagnosticsTraceMessage
+public sealed class TraceMessage
 {
     public string? Command { get; set; }
     public string? Message { get; set; }
@@ -55,19 +55,19 @@ public sealed class SystemDiagnosticsTraceMessage
     public LogLevel? Level { get; set; }
 }
 
-public class SystemDiagnosticsTraceStatus
+public sealed class TraceStatus
 {
     public string? Status { get; set; }
 }
 
-public class SystemDiagnosticsTraceNativeMessagingHost
+public class TraceNativeMessagingHost
 {
     private static readonly Stream stdin = Console.OpenStandardInput();
     private static readonly Stream stdout = Console.OpenStandardOutput();
 
     public static void Main(string[] args)
     {
-        SystemDiagnosticsTraceMessage? message;
+        TraceMessage? message;
         while ((message = Read()) != null)
         {
             string results = ProcessMessage(message);
@@ -83,7 +83,7 @@ public class SystemDiagnosticsTraceNativeMessagingHost
         }
     }
 
-    private static SystemDiagnosticsTraceMessage? Read()
+    private static TraceMessage? Read()
     {
         var messageLengthBuffer = new byte[4];
         int bytesRead = stdin.Read(messageLengthBuffer, 0, 4);
@@ -94,10 +94,10 @@ public class SystemDiagnosticsTraceNativeMessagingHost
         int messageLength = BitConverter.ToInt32(messageLengthBuffer, 0);
         var messageBuffer = new byte[messageLength];
         stdin.Read(messageBuffer, 0, messageLength);
-        SystemDiagnosticsTraceMessage? message = null;
+        TraceMessage? message = null;
         try
         {
-            message = JsonSerializer.Deserialize<SystemDiagnosticsTraceMessage>(messageBuffer);
+            message = JsonSerializer.Deserialize<TraceMessage>(messageBuffer);
         }
         catch (Exception ex)
         {
@@ -107,7 +107,7 @@ public class SystemDiagnosticsTraceNativeMessagingHost
         return message;
     }
 
-    private static string ProcessMessage(SystemDiagnosticsTraceMessage? message)
+    private static string ProcessMessage(TraceMessage? message)
     {
         if (message == null || string.IsNullOrEmpty(message.Command))
         {
@@ -142,7 +142,7 @@ public class SystemDiagnosticsTraceNativeMessagingHost
 
     private static void Write(string statusMessage)
     {
-        SystemDiagnosticsTraceStatus statusObject = new()
+        TraceStatus statusObject = new()
         {
             Status = statusMessage
         };
@@ -161,7 +161,7 @@ public class SystemDiagnosticsTraceNativeMessagingHost
         return Encoding.UTF8.GetString(arr, 0, arr.Length);
     }
 
-    private static bool ShouldProcessMessage(SystemDiagnosticsTraceMessage message)
+    private static bool ShouldProcessMessage(TraceMessage message)
     {
         if (message.Level == null)
         {
