@@ -62,19 +62,14 @@ public class SystemDiagnosticsTraceStatus
 
 public class SystemDiagnosticsTraceNativeMessagingHost
 {
-    private const int exit_success = 0;
     private static readonly Stream stdin = Console.OpenStandardInput();
     private static readonly Stream stdout = Console.OpenStandardOutput();
 
-    public static int Main(string[] args)
+    public static void Main(string[] args)
     {
-        while (true)
+        SystemDiagnosticsTraceMessage? message;
+        while ((message = Read()) != null)
         {
-            SystemDiagnosticsTraceMessage? message = Read();
-            if (message is null)
-            {
-                continue;
-            }
             string results = ProcessMessage(message);
             if (string.IsNullOrEmpty(results))
             {
@@ -83,7 +78,7 @@ public class SystemDiagnosticsTraceNativeMessagingHost
             Write(results);
             if (results == "exit")
             {
-                return exit_success;
+                return;
             }
         }
     }
