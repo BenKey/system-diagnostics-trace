@@ -1,13 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Label="ConfigurationAndPlatform">
     <Configurations>Debug;Release</Configurations>
-    <Platforms>AnyCPU</Platforms> 
+    <Platforms>AnyCPU</Platforms>
     <ProjectName>$(MSBuildProjectName)</ProjectName>
-    <RootNamespace>system-diagnostics-trace-native-messaging-host</RootNamespace>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Common.props))" />
   <PropertyGroup Label="Globals">
+    <ApplicationIcon>Resources\system-diagnostics-trace-native-messaging-host.ico</ApplicationIcon>
+    <IsPublishable>False</IsPublishable>
     <OutputType>WinExe</OutputType>
   </PropertyGroup>
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Sign.targets))" />
+  <ItemGroup>
+    <Content Include="Resources\system-diagnostics-trace-native-messaging-host.ico" />
+  </ItemGroup>
 </Project>

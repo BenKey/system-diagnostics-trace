@@ -19,155 +19,159 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-public enum LogLevel
+namespace TraceNativeMessagingHost
 {
-    logError,
-    logWarning,
-    logInfo,
-    logDebug,
-    logVerbose
-}
 
-public sealed class StringToLogLevelConverter: JsonConverter<LogLevel>
-{
-    public override LogLevel Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public enum TraceLevel
     {
-        if (Enum.TryParse(reader.GetString(), out LogLevel value))
-        {
-            return value;
-        }
-        return LogLevel.logWarning;
+        error,
+        warning,
+        info,
+        debug,
+        verbose
     }
 
-    public override void Write(Utf8JsonWriter writer, LogLevel value, JsonSerializerOptions options)
+    public sealed class StringToTraceLevelConverter: JsonConverter<TraceLevel>
     {
-        throw new NotImplementedException();
-    }
-}
-
-public sealed class TraceMessage
-{
-    public string? Command { get; set; }
-    public string? Message { get; set; }
-    public string? Source { get; set; }
-    public string? Context { get; set; }
-    [JsonConverter(typeof(StringToLogLevelConverter))]
-    public LogLevel? Level { get; set; }
-}
-
-public sealed class TraceStatus
-{
-    public string? Status { get; set; }
-}
-
-public class TraceNativeMessagingHost
-{
-    private static readonly Stream stdin = Console.OpenStandardInput();
-    private static readonly Stream stdout = Console.OpenStandardOutput();
-
-    public static void Main(string[] args)
-    {
-        TraceMessage? message;
-        while ((message = Read()) != null)
+        public override TraceLevel Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            string results = ProcessMessage(message);
-            if (string.IsNullOrEmpty(results))
+            if (Enum.TryParse(reader.GetString(), out TraceLevel value))
             {
-                continue;
+                return value;
             }
-            Write(results);
-            if (results == "exit")
+            return TraceLevel.warning;
+        }
+
+        public override void Write(Utf8JsonWriter writer, TraceLevel value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public sealed class TraceMessage
+    {
+        public string? Command { get; set; }
+        public string? Message { get; set; }
+        public string? Source { get; set; }
+        public string? Context { get; set; }
+        [JsonConverter(typeof(StringToTraceLevelConverter))]
+        public TraceLevel? Level { get; set; }
+    }
+
+    public sealed class TraceStatus
+    {
+        public string? Status { get; set; }
+    }
+
+    public sealed class App
+    {
+        private static readonly Stream stdin = Console.OpenStandardInput();
+        private static readonly Stream stdout = Console.OpenStandardOutput();
+
+        public static void Main(string[] args)
+        {
+            TraceMessage? message;
+            while ((message = Read()) != null)
             {
-                return;
+                string results = ProcessMessage(message);
+                if (string.IsNullOrEmpty(results))
+                {
+                    continue;
+                }
+                Write(results);
+                if (results == "exit")
+                {
+                    return;
+                }
             }
         }
-    }
 
-    private static TraceMessage? Read()
-    {
-        var messageLengthBuffer = new byte[4];
-        int bytesRead = stdin.Read(messageLengthBuffer, 0, 4);
-        if (bytesRead == 0)
+        private static TraceMessage? Read()
         {
-            return null;
+            var messageLengthBuffer = new byte[4];
+            int bytesRead = stdin.Read(messageLengthBuffer, 0, 4);
+            if (bytesRead == 0)
+            {
+                return null;
+            }
+            int messageLength = BitConverter.ToInt32(messageLengthBuffer, 0);
+            var messageBuffer = new byte[messageLength];
+            stdin.Read(messageBuffer, 0, messageLength);
+            TraceMessage? message = null;
+            try
+            {
+                message = JsonSerializer.Deserialize<TraceMessage>(messageBuffer);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"JsonSerializer.Deserialize failed with error '{ex.Message}'.");
+                Trace.WriteLine(GetString(messageBuffer));
+            }
+            return message;
         }
-        int messageLength = BitConverter.ToInt32(messageLengthBuffer, 0);
-        var messageBuffer = new byte[messageLength];
-        stdin.Read(messageBuffer, 0, messageLength);
-        TraceMessage? message = null;
-        try
-        {
-            message = JsonSerializer.Deserialize<TraceMessage>(messageBuffer);
-        }
-        catch (Exception ex)
-        {
-            Trace.WriteLine($"JsonSerializer.Deserialize failed with error '{ex.Message}'.");
-            Trace.WriteLine(GetString(messageBuffer));
-        }
-        return message;
-    }
 
-    private static string ProcessMessage(TraceMessage? message)
-    {
-        if (message == null || string.IsNullOrEmpty(message.Command))
+        private static string ProcessMessage(TraceMessage? message)
         {
-            return "exit";
-        }
-        switch (message.Command)
-        {
-        case "exit":
-            return "exit";
-        case "trace":
-        {
-            if (string.IsNullOrEmpty(message.Message))
+            if (message == null || string.IsNullOrEmpty(message.Command))
             {
                 return "exit";
             }
-            if (!ShouldProcessMessage(message))
+            switch (message.Command)
             {
-                return "filtered";
-            }
-            if (!string.IsNullOrEmpty(message.Context))
+            case "exit":
+                return "exit";
+            case "trace":
             {
-                Trace.WriteLine(message.Context, message.Message);
+                if (string.IsNullOrEmpty(message.Message))
+                {
+                    return "exit";
+                }
+                if (!ShouldProcessMessage(message))
+                {
+                    return "filtered";
+                }
+                if (!string.IsNullOrEmpty(message.Context))
+                {
+                    Trace.WriteLine(message.Context, message.Message);
+                    return "processed";
+                }
+                Trace.WriteLine(message.Message);
                 return "processed";
             }
-            Trace.WriteLine(message.Message);
-            return "processed";
+            default:
+                return "exit";
+            }
         }
-        default:
-            return "exit";
+
+        private static void Write(string statusMessage)
+        {
+            TraceStatus statusObject = new() {
+                Status = statusMessage
+            };
+            string statusJSON = JsonSerializer.Serialize(statusObject);
+            var bytes = Encoding.UTF8.GetBytes(statusJSON);
+            stdout.WriteByte((byte)((bytes.Length >> 0) & 0xFF));
+            stdout.WriteByte((byte)((bytes.Length >> 8) & 0xFF));
+            stdout.WriteByte((byte)((bytes.Length >> 16) & 0xFF));
+            stdout.WriteByte((byte)((bytes.Length >> 24) & 0xFF));
+            stdout.Write(bytes, 0, bytes.Length);
+            stdout.Flush();
         }
-    }
 
-    private static void Write(string statusMessage)
-    {
-        TraceStatus statusObject = new()
+        private static string GetString(byte[] arr)
         {
-            Status = statusMessage
-        };
-        string statusJSON = JsonSerializer.Serialize(statusObject);
-        var bytes = Encoding.UTF8.GetBytes(statusJSON);
-        stdout.WriteByte((byte)((bytes.Length >> 0) & 0xFF));
-        stdout.WriteByte((byte)((bytes.Length >> 8) & 0xFF));
-        stdout.WriteByte((byte)((bytes.Length >> 16) & 0xFF));
-        stdout.WriteByte((byte)((bytes.Length >> 24) & 0xFF));
-        stdout.Write(bytes, 0, bytes.Length);
-        stdout.Flush();
-    }
+            return Encoding.UTF8.GetString(arr, 0, arr.Length);
+        }
 
-    private static string GetString(byte[] arr)
-    {
-        return Encoding.UTF8.GetString(arr, 0, arr.Length);
-    }
-
-    private static bool ShouldProcessMessage(TraceMessage message)
-    {
-        if (message.Level == null)
+        private static bool ShouldProcessMessage(TraceMessage message)
         {
+            if (message.Level == null)
+            {
+                return true;
+            }
+            /* TO DO: Implement filtering based on a settings file. For now all messages are processed. */
             return true;
         }
-        /* TO DO: Implement filtering based on a settings file. For now all messages are processed. */
-        return true;
     }
+
 }
