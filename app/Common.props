@@ -30,10 +30,10 @@
     <Authors>Ben Key</Authors>
     <Company>Ben Key</Company>
     <Copyright>© Ben Key, 2023</Copyright>
-    <ApplicationVersion>2023.2308.2.0</ApplicationVersion>
-    <LinkVersion>2023.2308</LinkVersion>
-    <PackageVersion>2023.2308.2.0</PackageVersion>
-    <Version>2023.2308.2.0</Version>
+    <ApplicationVersion>2023.2309.1.0</ApplicationVersion>
+    <LinkVersion>2023.2309</LinkVersion>
+    <PackageVersion>2023.2309.1.0</PackageVersion>
+    <Version>2023.2309.1.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DefineDebug>true</DefineDebug>
