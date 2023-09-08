@@ -32,7 +32,8 @@ namespace TraceNativeMessagingHost
         warning,
         info,
         debug,
-        verbose
+        verbose,
+        extremelyVerbose
     }
 
     public sealed class StringToTraceLevelConverter: JsonConverter<TraceLevel>
@@ -354,7 +355,7 @@ namespace TraceNativeMessagingHost
 
         private static string? GetManifestFilePath()
         {
-            return Path.ChangeExtension(Application.ExecutablePath, "json");            
+            return Path.ChangeExtension(Application.ExecutablePath, "json");
         }
 
         private static bool CreateRegistryKey()
