@@ -15,11 +15,13 @@ limitations under the License.
 */
 
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Win32;
 
 namespace TraceNativeMessagingHost
 {
@@ -71,8 +73,20 @@ namespace TraceNativeMessagingHost
         public Dictionary<string, ContextEntriesDictionary>? SourceEntries { get; set; } = null;
     }
 
+    public sealed class ManifestFileData
+    {
+        public string name { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
+        public string path { get; set; } = string.Empty;
+        public string type { get; set; } = string.Empty;
+        public string[]? allowed_origins { get; set; } = null;
+    }
+
     public sealed class App
     {
+        const string  createRegistryKeyArgument = "create-registry-key";
+        const string generateManifestFileArgument = "generate-manifest-file";
+        const string installArgument = "install";
         const string testArgument = "test";
         const string unitTestArgument = "unit-test";
         private static readonly Stream stdin = Console.OpenStandardInput();
@@ -88,7 +102,22 @@ namespace TraceNativeMessagingHost
                 .Build();
             // Get values from the config given their key and their target type.
             settings = config.GetSection("Settings").Get<Settings>();
-            if (ShouldRunUnitTests(args))
+            if (ShouldCreateRegistryKey(args))
+            {
+                CreateRegistryKey();
+                return;
+            }
+            else if (ShouldGenerateManifestFile(args))
+            {
+                GenerateManifestFile();
+                return;
+            }
+            else if (ShouldInstall(args))
+            {
+                Install();
+                return;
+            }
+            else if (ShouldRunUnitTests(args))
             {
                 RunUnitTests();
                 return;
@@ -225,6 +254,36 @@ namespace TraceNativeMessagingHost
             return (message.Level <= levelForContext);
         }
 
+        private static bool ShouldCreateRegistryKey(string[] args)
+        {
+            if (args.Length != 1)
+            {
+                return false;
+            }
+            string firstArg = args[0];
+            return (firstArg.IndexOf(createRegistryKeyArgument, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        private static bool ShouldGenerateManifestFile(string[] args)
+        {
+            if (args.Length != 1)
+            {
+                return false;
+            }
+            string firstArg = args[0];
+            return (firstArg.IndexOf(generateManifestFileArgument, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        private static bool ShouldInstall(string[] args)
+        {
+            if (args.Length != 1)
+            {
+                return false;
+            }
+            string firstArg = args[0];
+            return (firstArg.IndexOf(installArgument, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
         private static bool ShouldRunUnitTests(string[] args)
         {
             if (args.Length != 1)
@@ -271,11 +330,84 @@ namespace TraceNativeMessagingHost
             Trace.WriteLine($"Test {testName} {GetTestState(shouldProcess == expectedResults)}");
         }
 
+        private static void RunYekNebShouldProcessMessageInfoUnitTest()
+        {
+            const string testName = "YekNebShouldProcessMessageInfo";
+            const bool expectedResults = false;
+            TraceMessage message = new();
+            message.Command = "test";
+            message.Message = "In RunYekNebShouldProcessMessageInfoUnitTest";
+            message.Source = "SullivanAndKey.com";
+            message.Context = "yekneb.js";
+            message.Level = TraceLevel.info;
+            bool shouldProcess = ShouldProcessMessage(message);
+            Trace.WriteLine($"Test {testName} {GetTestState(shouldProcess == expectedResults)}");
+        }
+
         private static void RunUnitTests()
         {
             RunInspectEventTraceLevelUnitTest();
             RunYekNebTraceLevelUnitTest();
             RunYekNebShouldProcessMessageDebugUnitTest();
+            RunYekNebShouldProcessMessageInfoUnitTest();
+        }
+
+        private static string? GetManifestFilePath()
+        {
+            return Path.ChangeExtension(Application.ExecutablePath, "json");            
+        }
+
+        private static bool CreateRegistryKey()
+        {
+            string? manifestFilePath = GetManifestFilePath();
+            if (string.IsNullOrEmpty(manifestFilePath) || !File.Exists(manifestFilePath))
+            {
+                return false;
+            }
+            string[] registryKeyParts = { "SOFTWARE", "Google", "Chrome", "NativeMessagingHosts", "benilda.key.system.diagnostics.trace.native.messaging.host" };
+            string registryKeyPath = Path.Combine(registryKeyParts);
+            using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(registryKeyPath))
+            {
+                if (registryKey is null)
+                {
+                    return false;
+                }
+                registryKey.SetValue(null, manifestFilePath, RegistryValueKind.String);
+            }
+            return true;
+        }
+
+        private static string[] GetAllowedOrigins()
+        {
+            string[] allowedOrigins = { "chrome-extension://gigdeohcjhmkmfnpfefcjfmajlinajcb/" };
+            return allowedOrigins;
+        }
+
+        private static bool GenerateManifestFile()
+        {
+            var manifestFilePath = GetManifestFilePath();
+            if (string.IsNullOrEmpty(manifestFilePath))
+            {
+                return false;
+            }
+            var manifestFileData = new ManifestFileData
+            {
+                name = "benilda.key.system.diagnostics.trace.native.messaging.host",
+                description = "Native messaging host for the system-diagnostics-trace browser extension.",
+                path = Application.ExecutablePath,
+                type = "stdio",
+                allowed_origins = GetAllowedOrigins()
+            };
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string jsonString = JsonSerializer.Serialize(manifestFileData, options);
+            File.WriteAllText(manifestFilePath, jsonString);
+            return true;
+        }
+
+        private static void Install()
+        {
+            GenerateManifestFile();
+            CreateRegistryKey();
         }
 
     }
