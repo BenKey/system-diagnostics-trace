@@ -1,3 +1,6 @@
+.sarif/
+.vs/
+Release/
 app/.sarif/
 app/.vs/
 app/bin/
