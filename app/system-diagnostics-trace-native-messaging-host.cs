@@ -157,7 +157,7 @@ namespace TraceNativeMessagingHost
             }
             catch (Exception ex)
             {
-                Trace.WriteLine($"JsonSerializer.Deserialize failed with error '{ex.Message}'.");
+                Trace.WriteLine($"JsonSerializer.Deserialize failed with error '{ex}'.", "exception");
                 Trace.WriteLine(GetString(messageBuffer));
             }
             return message;
@@ -185,7 +185,7 @@ namespace TraceNativeMessagingHost
                 }
                 if (!string.IsNullOrEmpty(message.Context))
                 {
-                    Trace.WriteLine(message.Context, message.Message);
+                    Trace.WriteLine(message.Message, message.Context);
                     return "processed";
                 }
                 Trace.WriteLine(message.Message);
@@ -306,7 +306,7 @@ namespace TraceNativeMessagingHost
             const string testName = "InspectEventTraceLevel";
             const TraceLevel expectedResults = TraceLevel.debug;
             TraceLevel level = GetTraceLevelFromSettings("JAWSInspect", "InspectEvent");
-            Trace.WriteLine($"Test {testName} {GetTestState(level == expectedResults)}");
+            Trace.WriteLine($"Test {testName} {GetTestState(level == expectedResults)}", "test");
         }
 
         private static void RunYekNebTraceLevelUnitTest()
@@ -314,7 +314,7 @@ namespace TraceNativeMessagingHost
             const string testName = "YekNebTraceLevel";
             const TraceLevel expectedResults = TraceLevel.info;
             TraceLevel level = GetTraceLevelFromSettings("SullivanAndKey.com", "yekneb.js");
-            Trace.WriteLine($"Test {testName} {GetTestState(level == expectedResults)}");
+            Trace.WriteLine($"Test {testName} {GetTestState(level == expectedResults)}", "test");
         }
 
         private static void RunYekNebShouldProcessMessageDebugUnitTest()
@@ -328,7 +328,7 @@ namespace TraceNativeMessagingHost
             message.Context = "yekneb.js";
             message.Level = TraceLevel.debug;
             bool shouldProcess = ShouldProcessMessage(message);
-            Trace.WriteLine($"Test {testName} {GetTestState(shouldProcess == expectedResults)}");
+            Trace.WriteLine($"Test {testName} {GetTestState(shouldProcess == expectedResults)}", "test");
         }
 
         private static void RunYekNebShouldProcessMessageInfoUnitTest()
@@ -342,7 +342,7 @@ namespace TraceNativeMessagingHost
             message.Context = "yekneb.js";
             message.Level = TraceLevel.info;
             bool shouldProcess = ShouldProcessMessage(message);
-            Trace.WriteLine($"Test {testName} {GetTestState(shouldProcess == expectedResults)}");
+            Trace.WriteLine($"Test {testName} {GetTestState(shouldProcess == expectedResults)}", "test");
         }
 
         private static void RunUnitTests()
