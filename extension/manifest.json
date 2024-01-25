@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhevsIG2lb/5RG19bnznJuxcT1/vHjmnPdQ/PhsA1L+5PvW7yOOq7RkIvJzu+QjrzL2g1dauc9ss4Jv8FHcvbsVmwev/IIH9CRShkavuSmm1EWU04eVBL7f/+4GTh+rdEK2yLgGdeceNNAWaLXkAozUFIQaaGltCtv+dRSoIk/6/1RQxxq2Xzat2eQyMcKC5lXSOEoIwbURKhYB8EUmSLDdyUud/nZ9UaVXtNZkHUHR+2iDnir5uoDyGepi0bhV4AeeEIiOMAjN2fT9TUZxFWO94QOH2dCin4nXZvbWY/6wVwldZesOWoDgEYSL8AFbqA4sIF4II7voqgiYOUeNA+VwIDAQAB",
   "name": "system-diagnostics-trace",
   "version": "1.0",
+
   "description": "A browser extension that makes it possible to use System.Diagnostics.Trace.WriteLine from a browser extension or a website.",
   "icons": {
     "16": "icons/system-diagnostics-trace-16.png",
@@ -11,15 +11,19 @@
     "128": "icons/system-diagnostics-trace-128.png",
     "256": "icons/system-diagnostics-trace-256.png"
   },
+
+  "author": "ben.key@yekneb.com",
   "background": {
     "service_worker": "service-worker.js"
   },
-  "permissions": [ "nativeMessaging" ],
   "externally_connectable": {
     "ids": ["*"],
     "matches": [
       "https://sullivanandkey.com/"
     ],
     "accepts_tls_channel_id": false
-  }
+  },
+  "homepage_url": "https://github.com/BenKey/system-diagnostics-trace",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhevsIG2lb/5RG19bnznJuxcT1/vHjmnPdQ/PhsA1L+5PvW7yOOq7RkIvJzu+QjrzL2g1dauc9ss4Jv8FHcvbsVmwev/IIH9CRShkavuSmm1EWU04eVBL7f/+4GTh+rdEK2yLgGdeceNNAWaLXkAozUFIQaaGltCtv+dRSoIk/6/1RQxxq2Xzat2eQyMcKC5lXSOEoIwbURKhYB8EUmSLDdyUud/nZ9UaVXtNZkHUHR+2iDnir5uoDyGepi0bhV4AeeEIiOMAjN2fT9TUZxFWO94QOH2dCin4nXZvbWY/6wVwldZesOWoDgEYSL8AFbqA4sIF4II7voqgiYOUeNA+VwIDAQAB",
+  "permissions": [ "nativeMessaging" ]
 }
