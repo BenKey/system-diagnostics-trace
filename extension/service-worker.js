@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 /* First connect to the "benilda.key.system.diagnostics.trace.native.messaging.host" app. */
-const nativePort = chrome.runtime.connectNative("benilda.key.system.diagnostics.trace.native.messaging.host");
+let nativePort = chrome.runtime.connectNative("benilda.key.system.diagnostics.trace.native.messaging.host");
 
 function IsInvalid(variable) {
   return (typeof (variable) === 'undefined' || variable == null);
