@@ -29,11 +29,13 @@
   <PropertyGroup Label="PackageAttributes">
     <Authors>Ben Key</Authors>
     <Company>Ben Key</Company>
-    <Copyright>© Ben Key, 2023</Copyright>
-    <ApplicationVersion>2023.2309.1.0</ApplicationVersion>
-    <LinkVersion>2023.2309</LinkVersion>
-    <PackageVersion>2023.2309.1.0</PackageVersion>
-    <Version>2023.2309.1.0</Version>
+    <Copyright>© Ben Key, 2024</Copyright>
+    <CopyrightHolder>Ben Key</CopyrightHolder>
+    <EMail>Ben.Key@YekNeb.com</EMail>
+    <ApplicationVersion>2024.2402.1.0</ApplicationVersion>
+    <LinkVersion>2024.2402</LinkVersion>
+    <PackageVersion>2024.2402.1.0</PackageVersion>
+    <Version>2024.2402.1.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DefineDebug>true</DefineDebug>
@@ -47,8 +49,8 @@
   </PropertyGroup>
   <PropertyGroup Label="CodeSigning">
     <CertificateThumbprint>$(SnKOpen_CertificateThumbprint)</CertificateThumbprint>
-    <CertificateThumbprint Condition="'$(CertificateThumbprint)'==''">1313366e27286687dfe7ff38278220778bb067e2</CertificateThumbprint>
-    <SignToolTimestampServer>http://timestamp.comodoca.com/authenticode</SignToolTimestampServer>
-    <SignToolTimestampServers>http://timestamp.comodoca.com/authenticode;http://timestamp.verisign.com/scripts/timstamp.dll;http://timestamp.globalsign.com/scripts/timstamp.dll;http://timestamp.comodoca.com/authenticode;http://www.startssl.com/timestamp</SignToolTimestampServers>
+    <EnableCodeSigning Condition="'$(CertificateThumbprint)'==''">false</EnableCodeSigning>
+    <EnableCodeSigning Condition="'$(CertificateThumbprint)'!=''">true</EnableCodeSigning>
+    <SignToolTimestampServer>http://sha256timestamp.ws.symantec.com/sha256/timestamp</SignToolTimestampServer>
   </PropertyGroup>
 </Project>

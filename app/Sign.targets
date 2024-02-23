@@ -5,9 +5,9 @@
       <DllToSign Include="$(OutputPath)$(TargetName).dll" />
       <ExeToSign Include="$(OutputPath)$(TargetName).exe" />
     </ItemGroup>
-    <Message Condition="Exists('@(DllToSign)')" Importance="high" Text="Signing '@(DllToSign)'." />
-    <SignFile Condition="Exists('@(DllToSign)')" CertificateThumbprint="$(CertificateThumbprint)" SigningTarget="@(DllToSign)" TargetFrameworkVersion="v4.5" TimestampUrl="$(SignToolTimestampServer)" />
-    <Message Condition="Exists('@(ExeToSign)')" Importance="high" Text="Signing '@(ExeToSign)'." />
-    <SignFile Condition="Exists('@(ExeToSign)')" CertificateThumbprint="$(CertificateThumbprint)" SigningTarget="@(ExeToSign)" TargetFrameworkVersion="v4.5" TimestampUrl="$(SignToolTimestampServer)" />
+    <Message Condition="'$(EnableCodeSigning)'=='true' And Exists('@(DllToSign)')" Importance="high" Text="Signing '@(DllToSign)'." />
+    <SignFile Condition="'$(EnableCodeSigning)'=='true' And Exists('@(DllToSign)')" CertificateThumbprint="$(CertificateThumbprint)" SigningTarget="@(DllToSign)" TargetFrameworkVersion="v4.5" TimestampUrl="$(SignToolTimestampServer)" />
+    <Message Condition="'$(EnableCodeSigning)'=='true' And Exists('@(ExeToSign)')" Importance="high" Text="Signing '@(ExeToSign)'." />
+    <SignFile Condition="'$(EnableCodeSigning)'=='true' And Exists('@(ExeToSign)')" CertificateThumbprint="$(CertificateThumbprint)" SigningTarget="@(ExeToSign)" TargetFrameworkVersion="v4.5" TimestampUrl="$(SignToolTimestampServer)" />
   </Target>
 </Project>
