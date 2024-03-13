@@ -1,5 +1,5 @@
 /*
-Copyright 2023 Ben Key
+Copyright 2023 - 2024 Ben Key
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,16 +26,27 @@ function IsValid(variable) {
 }
 
 function NativePortOnMessageListener(message) {
+  if (chrome.runtime.lastError) {
+    console.debug(chrome.runtime.lastError.message);
+    return false;
+  }
   if (IsInvalid(message)) {
+    console.debug('message is invalid.');
     return false;
   }
   if (!('Status' in message)) {
+    console.debug('Status field not in message.');
     return false;
   }
   console.log(`Received from Native Messaging Host: ${message.Status}.`);
 }
 
 function NativePortOnDisconnectListener() {
+  if (chrome.runtime.lastError) {
+    console.debug(chrome.runtime.lastError.message);
+    nativePort = null;
+    return false;
+  }
   console.log(`Native Messaging Host disconnected.`);
   nativePort = null;
 }
@@ -49,7 +60,13 @@ function RuntimeOnMessageExternalListener(message, sender, sendResponse) {
     Success: true,
     Status: 'Message posted to Native Messaging Host.'
   };
+  if (chrome.runtime.lastError) {
+    console.debug(chrome.runtime.lastError.message);
+    sendResponse(failedResponse);
+    return false;
+  }
   if (IsInvalid(nativePort)) {
+    console.debug('nativePort is invalid.');
     sendResponse(failedResponse);
     return false;
   }
@@ -58,13 +75,30 @@ function RuntimeOnMessageExternalListener(message, sender, sendResponse) {
 }
 
 function PortOnMessageListener(message) {
+  if (chrome.runtime.lastError) {
+    console.debug(chrome.runtime.lastError.message);
+    return false;
+  }
   if (IsInvalid(nativePort)) {
+    console.debug('nativePort is invalid.');
+    return false;
+  }
+  if (IsInvalid(message)) {
+    console.debug('message is invalid.');
     return false;
   }
   nativePort.postMessage(message);
 }
 
 function RuntimeOnConnectExternalListener(port) {
+  if (chrome.runtime.lastError) {
+    console.debug(chrome.runtime.lastError.message);
+    return false;
+  }
+  if (IsInvalid(port)) {
+    console.debug('port is invalid.');
+    return false;
+  }
   port.onMessage.addListener(PortOnMessageListener);
 }
 

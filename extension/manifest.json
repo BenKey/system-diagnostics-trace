@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "system-diagnostics-trace",
-  "version": "1.0",
+  "version": "1.1",
 
   "description": "A browser extension that makes it possible to use System.Diagnostics.Trace.WriteLine from a browser extension or a website.",
   "icons": {
