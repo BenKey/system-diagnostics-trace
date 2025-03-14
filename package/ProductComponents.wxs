@@ -1,0 +1,77 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <?include GUIDs.wxi?>
+  <?include Variables.wxi?>
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="JSON_Files_Component" Guid="$(var.JSON_Files_Component_Guid)">
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]\Components" Name="JSON_Files_Component" Type="integer" Value="1" KeyPath="yes" />
+
+        <File Id="AppSettings_json" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\AppSettings.json" />
+        <RemoveFile Id="Remove_AppSettings_json" On="uninstall" Name="AppSettings.json" />
+
+        <File Id="system_diagnostics_trace_native_messaging_host_deps_json" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\system-diagnostics-trace-native-messaging-host.deps.json" />
+        <RemoveFile Id="Remove_system_diagnostics_trace_native_messaging_host_deps_json" On="uninstall" Name="system-diagnostics-trace-native-messaging-host.deps.json" />
+
+        <File Id="system_diagnostics_trace_native_messaging_host_runtimeconfig_json" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\system-diagnostics-trace-native-messaging-host.runtimeconfig.json" />
+        <RemoveFile Id="Remove_system_diagnostics_trace_native_messaging_host_runtimeconfig_json" On="uninstall" Name="system-diagnostics-trace-native-messaging-host.runtimeconfig.json" />
+
+        <RemoveFolder Id="Remove_LocalProgramsFolder" Directory="LocalProgramsFolder" On="uninstall" />
+        <RemoveFolder Id="Remove_INSTALLFOLDER" On="uninstall" />
+      </Component>
+      <Component Id="App_Files_Component" Guid="$(var.App_Files_Component_Guid)">
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]\Components" Name="App_Files_Component" Type="integer" Value="1" KeyPath="yes" />
+
+        <File Id="system_diagnostics_trace_native_messaging_host_exe" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\system-diagnostics-trace-native-messaging-host.exe" />
+        <RemoveFile Id="Remove_system_diagnostics_trace_native_messaging_host" On="uninstall" Name="system-diagnostics-trace-native-messaging-host.exe" />
+
+        <File Id="system_diagnostics_trace_native_messaging_host_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\system-diagnostics-trace-native-messaging-host.dll" />
+        <RemoveFile Id="Remove_system_diagnostics_trace_native_messaging_host_dll" On="uninstall" Name="system-diagnostics-trace-native-messaging-host.dll" />
+      </Component>
+      <Component Id="Dependency_Files_Component" Guid="$(var.Dependency_Files_Component_Guid)">
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]\Components" Name="Dependency_Files_Component" Type="integer" Value="1" KeyPath="yes" />
+
+        <File Id="Microsoft_Extensions_Configuration_Abstractions_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\Microsoft.Extensions.Configuration.Abstractions.dll" />
+        <RemoveFile Id="Remove_Microsoft_Extensions_Configuration_Abstractions_dll" On="uninstall" Name="Microsoft.Extensions.Configuration.Abstractions.dll" />
+
+        <File Id="Microsoft_Extensions_Configuration_Binder_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\Microsoft.Extensions.Configuration.Binder.dll" />
+        <RemoveFile Id="Remove_Microsoft_Extensions_Configuration_Binder_dll" On="uninstall" Name="Microsoft.Extensions.Configuration.Binder.dll" />
+
+        <File Id="Microsoft_Extensions_Configuration_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\Microsoft.Extensions.Configuration.dll" />
+        <RemoveFile Id="Remove_Microsoft_Extensions_Configuration_dll" On="uninstall" Name="Microsoft.Extensions.Configuration.dll" />
+
+        <File Id="Microsoft_Extensions_Configuration_EnvironmentVariables_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\Microsoft.Extensions.Configuration.EnvironmentVariables.dll" />
+        <RemoveFile Id="Remove_Microsoft_Extensions_Configuration_EnvironmentVariables_dll" On="uninstall" Name="Microsoft.Extensions.Configuration.EnvironmentVariables.dll" />
+
+        <File Id="Microsoft_Extensions_Configuration_FileExtensions_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\Microsoft.Extensions.Configuration.FileExtensions.dll" />
+        <RemoveFile Id="Remove_Microsoft_Extensions_Configuration_FileExtensions_dll" On="uninstall" Name="Microsoft.Extensions.Configuration.FileExtensions.dll" />
+
+        <File Id="Microsoft_Extensions_Configuration_Json_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\Microsoft.Extensions.Configuration.Json.dll" />
+        <RemoveFile Id="Remove_Microsoft_Extensions_Configuration_Json_dll" On="uninstall" Name="Microsoft.Extensions.Configuration.Json.dll" />
+
+        <File Id="Microsoft_Extensions_FileProviders_Abstractions_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\Microsoft.Extensions.FileProviders.Abstractions.dll" />
+        <RemoveFile Id="Remove_Microsoft_Extensions_FileProviders_Abstractions_dll" On="uninstall" Name="Microsoft.Extensions.FileProviders.Abstractions.dll" />
+
+        <File Id="Microsoft_Extensions_FileProviders_Physical_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\Microsoft.Extensions.FileProviders.Physical.dll" />
+        <RemoveFile Id="Remove_Microsoft_Extensions_FileProviders_Physical_dll" On="uninstall" Name="Microsoft.Extensions.FileProviders.Physical.dll" />
+
+        <File Id="Microsoft_Extensions_FileSystemGlobbing_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\Microsoft.Extensions.FileSystemGlobbing.dll" />
+        <RemoveFile Id="Remove_Microsoft_Extensions_FileSystemGlobbing_dll" On="uninstall" Name="Microsoft.Extensions.FileSystemGlobbing.dll" />
+
+        <File Id="Microsoft_Extensions_Primitives_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\Microsoft.Extensions.Primitives.dll" />
+        <RemoveFile Id="Remove_Microsoft_Extensions_Primitives_dll" On="uninstall" Name="Microsoft.Extensions.Primitives.dll" />
+
+        <File Id="System_Text_Encodings_Web_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\System.Text.Encodings.Web.dll" />
+        <RemoveFile Id="Remove_System_Text_Encodings_Web_dll" On="uninstall" Name="System.Text.Encodings.Web.dll" />
+
+        <File Id="System_Text_Json_dll" Source="$(var.system_diagnostics_trace_native_messaging_host.TargetDir)\System.Text.Json.dll" />
+        <RemoveFile Id="Remove_System_Text_Json_dll" On="uninstall" Name="System.Text.Json.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <CustomAction Id="EXECUTE_AFTER_FINALIZE" Execute="immediate" Impersonate="no" Return="asyncNoWait"
+      FileRef="system_diagnostics_trace_native_messaging_host_exe" ExeCommand="install" />
+    <InstallExecuteSequence>
+      <Custom Action="EXECUTE_AFTER_FINALIZE" After="InstallFinalize" Condition="NOT Installed" />
+    </InstallExecuteSequence>
+  </Fragment>
+</Wix>

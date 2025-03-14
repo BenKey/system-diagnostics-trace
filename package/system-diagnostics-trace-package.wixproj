@@ -1,0 +1,17 @@
+﻿<Project Sdk="WixToolset.Sdk/5.0.2">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <SuppressSpecificWarnings>1076</SuppressSpecificWarnings>
+    <VerboseOutput>true</VerboseOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <SuppressSpecificWarnings>1076</SuppressSpecificWarnings>
+    <VerboseOutput>true</VerboseOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="GUIDs.wxi" />
+    <Content Include="Variables.wxi" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\app\system-diagnostics-trace-native-messaging-host.csproj" PrivateAssets="All" ReferenceOutputAssembly="false" SetTargetFramework="TargetFramework=net6.0-windows" />
+  </ItemGroup>
+</Project>

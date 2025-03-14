@@ -1,0 +1,11 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <?include GUIDs.wxi?>
+  <?include Variables.wxi?>
+  <Fragment>
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="LocalProgramsFolder" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="system-diagnostics-trace-browser-extension" />
+      </Directory>
+    </StandardDirectory>
+  </Fragment>
+</Wix>

@@ -1,0 +1,6 @@
+<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <?define UpgradeCode = "d13eb825-7f2b-4072-9ebf-c4d5ae93e0ef" ?>
+    <?define JSON_Files_Component_Guid = "bcde03e5-e2de-453e-8988-b9b2c826fb9e" ?>
+    <?define App_Files_Component_Guid = "3ad5ff2e-f32b-4e6c-a749-d121b9e5a827" ?>
+    <?define Dependency_Files_Component_Guid = "ee028fcc-95c0-416a-95d9-79fb5d155c6e" ?>
+</Include>
