@@ -5,3 +5,5 @@ app/.sarif/
 app/.vs/
 app/bin/
 app/obj/
+package/bin/
+package/obj/
